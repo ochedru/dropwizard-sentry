@@ -24,6 +24,20 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
+Please note that by default startup logger will catch all logs, you can specify custom threshold as following:
+
+```java
+public static void main(String[] args) throws Exception {
+    SentryBootstrap.Builder()
+        .withDsn(DSN)
+        .withThreshold(THRESHOLD)
+        .bootstrap();
+    Thread.currentThread().setUncaughtExceptionHandler(UncaughtExceptionHandlers.systemExit());
+
+    new MyDropwizardApplication().run(args);
+}
+```
+
 ### Configuration
 
 Include the `sentry` appender in your application's YAML configuration:
