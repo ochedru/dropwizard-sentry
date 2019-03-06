@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.dhatim</groupId>
         <artifactId>root-oss</artifactId>
-        <version>14.11.5</version>
+        <version>14.12.0</version>
     </parent>
     <groupId>org.dhatim</groupId>
     <artifactId>dropwizard-sentry</artifactId>
