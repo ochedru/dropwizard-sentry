@@ -79,7 +79,7 @@ This project is available in the [Central Repository](http://search.maven.org/#s
 <dependency>
   <groupId>org.dhatim</groupId>
   <artifactId>dropwizard-sentry</artifactId>
-  <version>1.3.8-1</version>
+  <version>1.3.9-1</version>
 </dependency>
 ```
 
