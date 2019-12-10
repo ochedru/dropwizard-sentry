@@ -157,7 +157,7 @@ public final class SentryBootstrap {
         /**
          *
          * @param threshold log events threshold
-         * @return
+         * @return this builder
          */
         public Builder withThreshold(String threshold) {
             this.thresholdOptional = Optional.of(threshold);
@@ -167,7 +167,7 @@ public final class SentryBootstrap {
         /**
          *
          * @param mdcTags Tag names to be extracted from logging MDC
-         * @return
+         * @return this builder
          */
         public Builder withMdcTags(Set<String> mdcTags) {
             this.mdcTags = Optional.of(mdcTags);
@@ -177,7 +177,7 @@ public final class SentryBootstrap {
         /**
          *
          * @param environment The environment name to pass to Sentry
-         * @return
+         * @return this builder
          */
         public Builder withEnvironment(String environment) {
             this.environment = Optional.of(environment);
@@ -187,7 +187,7 @@ public final class SentryBootstrap {
         /**
          *
          * @param release The release name to pass to Sentry
-         * @return
+         * @return this builder
          */
         public Builder withRelease(String release) {
             this.release = Optional.of(release);
@@ -197,7 +197,7 @@ public final class SentryBootstrap {
         /**
          *
          * @param serverName The server name to pass to Sentry
-         * @return
+         * @return this builder
          */
         public Builder withServerName(String serverName) {
             this.serverName = Optional.of(serverName);
@@ -208,7 +208,7 @@ public final class SentryBootstrap {
          *
          * @param cleanRootLogger If true, detach and stop all other appenders from
          *                        the root logger
-         * @return
+         * @return this builder
          */
         public Builder withCleanRootLogger(boolean cleanRootLogger) {
             this.cleanRootLogger = cleanRootLogger;
