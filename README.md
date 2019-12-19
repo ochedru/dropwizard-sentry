@@ -6,7 +6,7 @@
 [![Javadocs](https://www.javadoc.io/badge/org.dhatim/dropwizard-sentry.svg)](https://www.javadoc.io/doc/org.dhatim/dropwizard-sentry)
 
 Dropwizard integration for error logging to [Sentry](https://sentry.io).
-**Please note version 2 requires Dropwizard 2 and JDK 13.**
+**Please note version 2 requires Dropwizard 2.**
 
 ## Usage
 
@@ -80,7 +80,7 @@ This project is available in the [Central Repository](http://search.maven.org/#s
 <dependency>
   <groupId>org.dhatim</groupId>
   <artifactId>dropwizard-sentry</artifactId>
-  <version>2.0.0-1</version>
+  <version>2.0.0-2</version>
 </dependency>
 ```
 
