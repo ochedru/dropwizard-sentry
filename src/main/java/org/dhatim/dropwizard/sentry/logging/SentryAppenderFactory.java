@@ -3,6 +3,7 @@ package org.dhatim.dropwizard.sentry.logging;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.filter.Filter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -14,6 +15,7 @@ import io.sentry.DefaultSentryClientFactory;
 import io.sentry.SentryClient;
 import io.sentry.SentryClientFactory;
 import io.sentry.dsn.Dsn;
+import io.sentry.event.EventBuilder;
 import io.sentry.logback.SentryAppender;
 import org.dhatim.dropwizard.sentry.filters.DroppingSentryLoggingFilter;
 
@@ -145,7 +147,7 @@ public class SentryAppenderFactory extends AbstractAppenderFactory<ILoggingEvent
         try {
             String factoryClassName = sentryClientFactory.orElse(DefaultSentryClientFactory.class.getCanonicalName());
             Class<? extends SentryClientFactory> factoryClass = Class.forName(factoryClassName).asSubclass(SentryClientFactory.class);
-            factory = factoryClass.newInstance();
+            factory = factoryClass.getConstructor().newInstance();
         } catch (ReflectiveOperationException ex) {
             throw new RuntimeException(ex);
         }
@@ -161,7 +163,7 @@ public class SentryAppenderFactory extends AbstractAppenderFactory<ILoggingEvent
         }
         SentryClient sentryClient = SentryClientFactory.sentryClient(dsn, factory);
 
-        final SentryAppender appender = new SentryAppender();
+        SentryAppender appender = new SentryAppenderEx();
         appender.setName(APPENDER_NAME);
         appender.setContext(context);
 
@@ -175,16 +177,29 @@ public class SentryAppenderFactory extends AbstractAppenderFactory<ILoggingEvent
         Sentry.setStoredClient(sentryClient);
 
         appender.addFilter(levelFilterFactory.build(threshold));
-        getFilterFactories().stream().forEach(f -> appender.addFilter(f.build()));
+        getFilterFactories().forEach(f -> appender.addFilter(f.build()));
         appender.start();
 
-        final Appender<ILoggingEvent> asyncAppender = wrapAsync(appender, asyncAppenderFactory, context);
-        addDroppingRavenLoggingFilter(asyncAppender);
+        Appender<ILoggingEvent> asyncAppender = wrapAsync(appender, asyncAppenderFactory, context);
 
-        return asyncAppender;
+        /*
+         * Since events are sent asynchronously by a logback worker thread, we loose context stored in thread local
+         * (breadcrumbs, user info, http info, last event id, tags, extra).
+         * The purpose of this appender is to save the thread local context into the logging event,
+         * and retrieve this information when building the Sentry event.
+         */
+        Appender<ILoggingEvent> asyncAppenderWithContext = new DelegateAppender(asyncAppender) {
+            @Override
+            public void doAppend(ILoggingEvent event) throws LogbackException {
+                super.doAppend(new LoggingEventWithContext(event));
+            }
+        };
+        addDroppingSentryLoggingFilter(asyncAppenderWithContext);
+
+        return asyncAppenderWithContext;
     }
 
-    private void addDroppingRavenLoggingFilter(Appender<ILoggingEvent> appender) {
+    private void addDroppingSentryLoggingFilter(Appender<ILoggingEvent> appender) {
         final Filter<ILoggingEvent> filter = new DroppingSentryLoggingFilter();
         filter.start();
         appender.addFilter(filter);
