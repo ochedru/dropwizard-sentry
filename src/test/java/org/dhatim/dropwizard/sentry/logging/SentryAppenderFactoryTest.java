@@ -1,6 +1,5 @@
 package org.dhatim.dropwizard.sentry.logging;
 
-import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -8,12 +7,14 @@ import io.dropwizard.configuration.ConfigurationException;
 import io.dropwizard.logging.async.AsyncLoggingEventAppenderFactory;
 import io.dropwizard.logging.filter.ThresholdLevelFilterFactory;
 import io.dropwizard.logging.layout.DropwizardLayoutFactory;
+import org.junit.Test;
+
 import java.io.IOException;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import org.junit.Test;
 
 public class SentryAppenderFactoryTest {
 
@@ -48,7 +49,7 @@ public class SentryAppenderFactoryTest {
         Appender<ILoggingEvent> appender
                 = factory.build(context, "", layoutFactory, levelFilterFactory, asyncAppenderFactory);
 
-        assertThat(appender, instanceOf(AsyncAppender.class));
+        assertThat(appender, instanceOf(DelegateAppender.class));
     }
 
 }
