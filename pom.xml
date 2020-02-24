@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.dhatim</groupId>
         <artifactId>root-oss</artifactId>
-        <version>17.0.6</version>
+        <version>17.3.0</version>
     </parent>
     <groupId>org.dhatim</groupId>
     <artifactId>dropwizard-sentry</artifactId>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry-logback</artifactId>
-            <version>1.7.29</version>
+            <version>1.7.30</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
